@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Your Dashboard</h1>
+        <form action="/upload" method="POST" enctype="multipart/form-data">
+            <input type="file" name="file" required>
+            <button type="submit">Upload</button>
+        </form>
+        <hr>
+        <h2>Your Files</h2>
+        <div id="file-list">
+        </div>
+    </div>
+
+    <script>
+        async function fetchFiles() {
+            const response = await fetch('/api/files');
+            const data = await response.json();
+            const fileList = document.getElementById('file-list');
+            fileList.innerHTML = '';
+
+            data.files.forEach(file => {
+                const fileElement = document.createElement('div');
+                fileElement.classList.add('file-item');
+                fileElement.innerHTML = `
+                    <span>${file.originalName}</span>
+                    <button onclick="downloadFile(${file.id})">Download</button>
+                    <button onclick="deleteFile(${file.id})">Delete</button>
+                `;
+                fileList.appendChild(fileElement);
+            });
+        }
+
+        async function downloadFile(fileId) {
+            window.location.href = `/download/${fileId}`;
+        }
+
+        async function deleteFile(fileId) {
+            const response = await fetch(`/delete/${fileId}`, { method: 'POST' });
+            if (response.ok) {
+                fetchFiles();
+            } else {
+                alert('Failed to delete file');
+            }
+        }
+
+        window.onload = fetchFiles;
+    </script>
+</body>
+</html>
