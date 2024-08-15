@@ -5,6 +5,8 @@
 
 Create `.env` file
 
-```DISCORD_WEBHOOK_URL=
+```
+DISCORD_WEBHOOK_URL=
 OBFUSCATION_KEY=
-MONGODB_URI=```
+MONGODB_URI=
+```
